@@ -89,6 +89,7 @@ async def insert_row(req: InsertRowRequest) -> Any:
                             trade_volume=row.trade_volume,
                         )
                     )
+                await connection.commit()
         return {"message": "Insert Row Request Success!"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"{e}")

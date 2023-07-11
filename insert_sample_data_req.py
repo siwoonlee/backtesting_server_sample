@@ -1,3 +1,4 @@
+import time
 import requests
 import tqdm
 import pandas as pd
@@ -18,15 +19,16 @@ if __name__ == "__main__":
 				"trade_volume": getattr(row, "Volume"),
 			}
 		)
-		if len(rows_to_send) == 1000:
+		if len(rows_to_send) == 200:
 			res = requests.post(
-				"http://3.35.197.182:8000/insert_row",
+				"http://3.38.137.102:8000/insert_row",
 				json={"rows": rows_to_send},
 			)
 			res.raise_for_status()
 			rows_to_send.clear()
+			time.sleep(0.05)  # AWS t3.micro instance needs cooling time
 	res = requests.post(
-		"http://3.35.197.182:8000/insert_row",
+		"http://3.38.137.102:8000/insert_row",
 		json={"rows": rows_to_send},
 	)
 	res.raise_for_status()

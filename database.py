@@ -21,7 +21,7 @@ class MySQLDatabase:
             password=MYSQL_PASSWORD,
             db=MYSQL_DATABASE_NAME,
             port=MYSQL_PORT,
-            autocommit=True,
+            autocommit=False,
             minsize=5,
             maxsize=20,
         )
