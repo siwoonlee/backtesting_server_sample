@@ -1,15 +1,15 @@
 from pydantic import BaseModel
 
 
-class BackTest(BaseModel):
+class BackTestPerTicker(BaseModel):
     ticker: str
-    return_rate: float
-    maximum_draw_down: float
+    start: str
+    end: str
     sharpe_ratio: float
+    overall_return_percent: float
+    buy_and_hold_return_percent: float
+    maximum_draw_down_percent: float
 
 
 class BackTestResponse(BaseModel):
-    result: list[BackTest]
-    total_return_rate: float
-    total_maximum_draw_down: float
-    total_sharpe_ratio: float
+    result: list[BackTestPerTicker]

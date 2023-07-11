@@ -3,10 +3,12 @@ from fastapi import FastAPI, HTTPException
 import pandas as pd
 import uvicorn
 import asyncio
+from backtesting import Backtest
 
 from database import MySQLDatabase
 from queries import SELECT_DATA_BY_TICKER, SELECT_ALL_TICKERS
-from responses import BackTest, BackTestResponse
+from responses import BackTestPerTicker, BackTestResponse
+from strategies import SimpleCrossStrategy
 
 db = MySQLDatabase()
 app = FastAPI()
@@ -17,12 +19,36 @@ async def startup_event():
     await db.connect()
 
 
-async def cross_strategy_backtest(ticker: str) -> BackTest:
+async def cross_strategy_backtest(ticker: str) -> BackTestPerTicker:
     df = await db.execute_query_to_pandas_df(
         SELECT_DATA_BY_TICKER.format(ticker=ticker)
     )
-    result = ...
-    return result
+    df.rename(
+        columns={
+            "transacted_date": "Date",
+            "close_price": "Close",
+        },
+        inplace=True
+    )
+    df.set_index("Date", inplace=True)
+    df.index = pd.to_datetime(df.index)
+    bt = Backtest(
+        df,
+        SimpleCrossStrategy,
+        cash=10_000_000,
+        commission=.002,
+        exclusive_orders=True,
+    )
+    output = bt.run()
+    return BackTestPerTicker(
+        ticker=ticker,
+        start=str(output['Start']),
+        end=str(output['End']),
+        sharpe_ratio=output['Sharpe Ratio'],
+        overall_return_percent=output['Return [%]'],
+        buy_and_hold_return_percent=output['Buy & Hold Return [%]'],
+        maximum_draw_down_percent=output['Max. Drawdown [%]'],
+    )
 
 
 @app.post("/backtest", response_model=BackTestResponse)
@@ -35,13 +61,7 @@ async def backtest() -> Any:
             ) for ticker in df['ticker']
         ]
         result_list = await asyncio.gather(*tasks)
-        # do something with result_list
-        return dict(
-            result=result_list,
-            total_return_rate=...,
-            total_maximum_draw_down=...,
-            total_sharpe_ratio=...,
-        )
+        return BackTestResponse(result=result_list)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"{e}")
 
