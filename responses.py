@@ -13,3 +13,17 @@ class BackTestPerTicker(BaseModel):
 
 class BackTestResponse(BaseModel):
     result: list[BackTestPerTicker]
+
+
+class InsertRowResponse(BaseModel):
+    message: str
+
+
+class InsertRowRequest(BaseModel):
+    transacted_date: str
+    ticker: str
+    open_price: float
+    high_price: float
+    low_price: float
+    close_price: float
+    trade_volume: float

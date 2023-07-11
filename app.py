@@ -6,8 +6,8 @@ import asyncio
 from backtesting import Backtest
 
 from database import MySQLDatabase
-from queries import SELECT_DATA_BY_TICKER, SELECT_ALL_TICKERS
-from responses import BackTestPerTicker, BackTestResponse
+from queries import SELECT_DATA_BY_TICKER, SELECT_ALL_TICKERS, INSERT_SAMPLE_DATA_QUERY
+from responses import BackTestPerTicker, BackTestResponse, InsertRowResponse, InsertRowRequest
 from strategies import SimpleCrossStrategy
 
 db = MySQLDatabase()
@@ -66,6 +66,27 @@ async def backtest() -> Any:
         ]
         result_list = await asyncio.gather(*tasks)
         return BackTestResponse(result=result_list)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"{e}")
+
+
+@app.post("/insert_row", response_model=InsertRowResponse)
+async def insert_row(req: InsertRowRequest) -> Any:
+    try:
+        async with db.pool.acquire() as connection:
+            async with connection.cursor() as cursor:
+                await cursor.execute(
+                    INSERT_SAMPLE_DATA_QUERY.format(
+                        transacted_date=req.transacted_date,
+                        ticker=req.ticker,
+                        open_price=req.open_price,
+                        high_price=req.high_price,
+                        low_price=req.low_price,
+                        close_price=req.close_price,
+                        trade_volume=req.trade_volume,
+                    )
+                )
+        return {"message": "Insert Row Request Success!"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"{e}")
 

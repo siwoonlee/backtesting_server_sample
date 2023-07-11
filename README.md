@@ -1,6 +1,12 @@
 # Sample code for backtesting server using FastAPI & MySQL 
     runs on AWS EC2 t3.micro instance -> vCPU: 2, vRAM: 1GB 
 
+### You will need to insert sample data to remote server
+    python insert_sample_data_req.py
+    import requests
+    res = requests.get("http://3.35.197.182:8000/backtest")
+    print(res.json())
+
 ### Sample request code
     import requests
     res = requests.get("http://3.35.197.182:8000/backtest")
@@ -31,4 +37,5 @@
 
 ### Build & Run this server
     docker build --tag backtest_server:1.0 .
-    docker run -d --name homepage -p 8000:8000 --ipc=host --net="host" -v /home/ubuntu/backtest_server_sample:/backtest_server_sample backtest_server:1.0
+    docker run -d --name backtest_server -p 8000:8000 --ipc=host --net="host" -v /home/ubuntu/backtesting_server_sample:/backtesting_server_sample backtest_server:1.0
+

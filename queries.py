@@ -17,7 +17,7 @@ SAMPLE_DATA_DDL_QUERY = """
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 """
 
-SAMPLE_DATA_QUERY = """
+INSERT_SAMPLE_DATA_QUERY = """
     INSERT INTO sample_data (
         transacted_date, 
         ticker, 
