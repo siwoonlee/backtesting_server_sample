@@ -1,0 +1,15 @@
+fastapi[all]
+pydantic
+SQLAlchemy
+pymysql
+cryptography
+jinja2
+requests
+loguru
+pandas
+mysql-connector-python
+pillow
+uvicorn
+aiomysql
+pymysql-pool
+backtesting
