@@ -3,9 +3,6 @@
 
 ### You will need to insert sample data to remote server
     python insert_sample_data_req.py
-    import requests
-    res = requests.get("http://3.35.197.182:8000/backtest")
-    print(res.json())
 
 ### Sample request code
     import requests

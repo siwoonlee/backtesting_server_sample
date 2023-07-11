@@ -19,7 +19,7 @@ class InsertRowResponse(BaseModel):
     message: str
 
 
-class InsertRowRequest(BaseModel):
+class Row(BaseModel):
     transacted_date: str
     ticker: str
     open_price: float
@@ -27,3 +27,7 @@ class InsertRowRequest(BaseModel):
     low_price: float
     close_price: float
     trade_volume: float
+
+
+class InsertRowRequest(BaseModel):
+    rows: list[Row]

@@ -1,5 +1,3 @@
-import tqdm
-import pandas as pd
 import pymysql
 from constants import (
     MYSQL_USERNAME,
@@ -8,7 +6,7 @@ from constants import (
     MYSQL_PORT,
     MYSQL_DATABASE_NAME,
 )
-from queries import SAMPLE_DATA_DDL_QUERY, SAMPLE_DATA_QUERY
+from queries import SAMPLE_DATA_DDL_QUERY
 
 
 def create_db_and_tables():
