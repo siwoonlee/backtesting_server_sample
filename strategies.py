@@ -12,8 +12,8 @@ class SimpleCrossStrategy(Strategy):
         long_ma_unit: int = 100,
     ):
         close = self.data.Close
-        self.sma1 = self.I(SMA, close, self.short_ma_unit)
-        self.sma2 = self.I(SMA, close, self.long_ma_unit)
+        self.sma1 = self.I(SMA, close, short_ma_unit)
+        self.sma2 = self.I(SMA, close, long_ma_unit)
 
     def next(self):
         if crossover(self.sma1, self.sma2):

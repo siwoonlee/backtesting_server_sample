@@ -1,3 +1,7 @@
+"""
+    This script needs to be executed once before running the app for sample data insertion.
+"""
+
 import tqdm
 import threading
 import pymysqlpool

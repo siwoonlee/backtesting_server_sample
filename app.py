@@ -26,7 +26,11 @@ async def cross_strategy_backtest(ticker: str) -> BackTestPerTicker:
     df.rename(
         columns={
             "transacted_date": "Date",
+            "open_price": "Open",
+            "high_price": "High",
+            "low_price": "Low",
             "close_price": "Close",
+            "trade_volume": "Volume",
         },
         inplace=True
     )
@@ -51,7 +55,7 @@ async def cross_strategy_backtest(ticker: str) -> BackTestPerTicker:
     )
 
 
-@app.post("/backtest", response_model=BackTestResponse)
+@app.get("/backtest", response_model=BackTestResponse)
 async def backtest() -> Any:
     try:
         df = await db.execute_query_to_pandas_df(SELECT_ALL_TICKERS)
