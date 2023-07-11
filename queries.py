@@ -36,3 +36,23 @@ SAMPLE_DATA_QUERY = """
         {trade_volume}
     )
 """
+
+SELECT_DATA_BY_TICKER = """
+	SELECT
+	    transacted_date
+	    , open_price
+	    , high_price
+	    , low_price
+	    , close_price
+	    , trade_volume
+	FROM sample_data 
+	WHERE ticker = '{ticker}' 
+	ORDER BY transacted_date
+"""
+
+SELECT_ALL_TICKERS = """
+	SELECT
+	    ticker
+	FROM sample_data
+	GROUP BY ticker
+"""
