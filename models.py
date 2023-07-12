@@ -31,3 +31,7 @@ class Row(BaseModel):
 
 class InsertRowRequest(BaseModel):
     rows: list[Row]
+
+
+class BackTestRequest(BaseModel):
+    tickers_list: list[str] = None

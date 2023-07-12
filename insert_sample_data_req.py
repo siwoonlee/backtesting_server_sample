@@ -21,14 +21,14 @@ if __name__ == "__main__":
 		)
 		if len(rows_to_send) == 200:
 			res = requests.post(
-				"http://3.38.137.102:8000/insert_row",
+				"http://3.36.101.24:8000/insert_row",
 				json={"rows": rows_to_send},
 			)
 			res.raise_for_status()
 			rows_to_send.clear()
 			time.sleep(0.05)  # AWS t3.micro instance needs cooling time
 	res = requests.post(
-		"http://3.38.137.102:8000/insert_row",
+		"http://3.36.101.24:8000/insert_row",
 		json={"rows": rows_to_send},
 	)
 	res.raise_for_status()

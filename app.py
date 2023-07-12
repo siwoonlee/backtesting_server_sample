@@ -1,3 +1,4 @@
+import logging
 from typing import Any
 from fastapi import FastAPI, HTTPException
 import pandas as pd
@@ -7,10 +8,11 @@ from backtesting import Backtest
 
 from database import MySQLDatabase
 from queries import SELECT_DATA_BY_TICKER, SELECT_ALL_TICKERS, INSERT_SAMPLE_DATA_QUERY
-from responses import BackTestPerTicker, BackTestResponse, InsertRowResponse, InsertRowRequest
+from models import BackTestPerTicker, BackTestResponse, InsertRowResponse, InsertRowRequest, BackTestRequest
 from strategies import SimpleCrossStrategy
 from create_mysql_db_table import create_db_and_tables
 
+logger = logging.getLogger("uvicorn")
 create_db_and_tables()
 db = MySQLDatabase()
 app = FastAPI()
@@ -57,14 +59,18 @@ async def cross_strategy_backtest(ticker: str) -> BackTestPerTicker:
     )
 
 
-@app.get("/backtest", response_model=BackTestResponse)
-async def backtest() -> Any:
+@app.post("/backtest", response_model=BackTestResponse)
+async def backtest(req: BackTestRequest) -> Any:
     try:
-        df = await db.execute_query_to_pandas_df(SELECT_ALL_TICKERS)
+        if req.tickers_list:
+            tickers_list = req.tickers_list
+        else:
+            df = await db.execute_query_to_pandas_df(SELECT_ALL_TICKERS)
+            tickers_list = df['ticker'].values
         tasks = [
             asyncio.ensure_future(
                 cross_strategy_backtest(ticker)
-            ) for ticker in df['ticker']
+            ) for ticker in tickers_list
         ]
         result_list = await asyncio.gather(*tasks)
         return BackTestResponse(result=result_list)
